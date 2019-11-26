@@ -1,7 +1,7 @@
 How to Implement OData v4 Service with XPO (.NET Core)
 ========================================
 
-This example demonstrates how to create an ASP.NET Core 2.2 Web API project and provide a simple REST API using the XPO ORM for data access.
+This example demonstrates how to create an ASP.NET Core 2.2 Web API project and provide a simple REST API using the XPO ORM for data access. For the .NET Framework-based example, refer to [How to Implement OData v4 Service with XPO (.NET Framework)](https://github.com/DevExpress-Examples/XPO_how-to-implement-odata4-service-with-xpo).
 
 ## Prerequisites
 

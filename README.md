@@ -1,14 +1,14 @@
-How to Implement OData v4 Service with XPO (.NET Core)
+How to Implement OData v4 Service with XPO (.NET Core 3.1)
 ========================================
 
-This example demonstrates how to create **an ASP.NET Core 2.2 Web API** project (**.NET Core 3** will be supported [when Microsoft supports it](https://github.com/OData/WebApi/issues/1748#issuecomment-553109029)) and provide a simple REST API using the XPO ORM for data access. For the .NET Framework-based example, refer to [How to Implement OData v4 Service with XPO (.NET Framework)](https://github.com/DevExpress-Examples/XPO_how-to-implement-odata4-service-with-xpo).
+This example demonstrates how to create **an ASP.NET Core 3.1 Web API** project and provide a simple REST API using the XPO ORM for data access. For the .NET Framework-based example, refer to [How to Implement OData v4 Service with XPO (.NET Framework)](https://github.com/DevExpress-Examples/XPO_how-to-implement-odata4-service-with-xpo).
 
 ## Prerequisites
 
-* [Visual Studio 2017 or 2019](https://visualstudio.microsoft.com/vs/) with the following workloads:
+* [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) with the following workloads:
   * **ASP.NET and web development**
   * **.NET Core cross-platform development**
-* [.NET Core SDK 2.2 or later](https://www.microsoft.com/net/download/all)
+* [.NET Core SDK 3.1 or later](https://www.microsoft.com/net/download/all)
 
 ## Steps To Implement
 
@@ -33,36 +33,36 @@ This example demonstrates how to create **an ASP.NET Core 2.2 Web API** project 
 - Modify the `ConfigureServices()` method in the *Startup.cs* file to initialize the data layer and register XPO UnitOfWork and OData services in Dependency Injection.
 ```cs
   public void ConfigureServices(IServiceCollection services) {
-     services.AddOData();
-     services.AddODataQueryFilter();
-     services.AddMvc(options => {
-        options.EnableEndpointRouting = false;
-     })
-     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-     services.AddXpoDefaultUnitOfWork(true, (DataLayerOptionsBuilder options) =>
-        options.UseConnectionString(Configuration.GetConnectionString("MSSqlServer"))
-        .UseAutoCreationOption(AutoCreateOption.DatabaseAndSchema) // debug only
-        .UseEntityTypes(ConnectionHelper.GetPersistentTypes()));
+  	services.AddOData();
+  	services.AddODataQueryFilter();
+      services.AddMvc(options => {
+          options.EnableEndpointRouting = false;
+          options.ModelValidatorProviders.Clear();
+      });
+  
+      services.AddSingleton<IObjectModelValidator, CustomModelValidator>();
+  
+      services.AddXpoDefaultUnitOfWork(true, (DataLayerOptionsBuilder options) =>
+          options.UseConnectionString(Configuration.GetConnectionString("MSSqlServer"))
+          .UseAutoCreationOption(AutoCreateOption.DatabaseAndSchema) // debug only
+          .UseEntityTypes(ConnectionHelper.GetPersistentTypes()));
   }
 ```
 - Modify the `Configure()` method in the *Startup.cs* file to add middleware for OData services and specify mapping for the service route. Note that we will pass the EDM model defined on the second step as a parameter (`SingletonEdmModel.GetEdmModel()`).
 ```cs
-public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
-    if (env.IsDevelopment()) {
-    	app.UseDeveloperExceptionPage();
-    } else {
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-	app.UseHsts();
-    }
-
-    //app.UseHttpsRedirection();
-
-    app.UseODataBatching();
-
-    app.UseMvc(b => { 
-	b.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
-        b.MapODataServiceRoute("odata", "odata", SingletonEdmModel.GetEdmModel(), new DefaultODataBatchHandler());
-    });
+  public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+      if (env.IsDevelopment())
+      {
+          app.UseDeveloperExceptionPage();
+      }
+  
+      app.UseODataBatching();
+  
+      app.UseMvc(b =>
+      {
+          b.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
+          b.MapODataServiceRoute("odata", "odata", SingletonEdmModel.GetEdmModel(), new DefaultODataBatchHandler());
+      });
   }
 ```
 

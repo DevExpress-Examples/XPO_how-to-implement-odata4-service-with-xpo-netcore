@@ -21,7 +21,7 @@ namespace Tests {
         [OneTimeSetUp]
         public void OneTimeSetup() {
             string appPath = Path.GetDirectoryName(this.GetType().Assembly.Location);
-            appPath = Path.GetFullPath(Path.Combine(appPath, "..", "..", "..", "..", "ODataService", "bin", "debug", "netcoreapp2.2"));
+            appPath = Path.GetFullPath(Path.Combine(appPath, "..", "..", "..", "..", "ODataService", "bin", "debug", "netcoreapp3.1"));
             dotnetProcess = Process.Start(new ProcessStartInfo("dotnet") { WorkingDirectory = appPath, Arguments = "ODataService.dll" });
         }
 

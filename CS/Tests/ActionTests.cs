@@ -7,6 +7,7 @@ using Default;
 using NUnit.Framework;
 
 namespace Tests {
+    [TestFixture]
     public class ActionTests : ODataTestsBase {
 
         [Test]

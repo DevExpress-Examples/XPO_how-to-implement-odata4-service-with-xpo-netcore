@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Concurrent;
 
-namespace ODataService {
+namespace ODataService.Helpers {
     class CustomModelValidator : IObjectModelValidator {
         readonly static ConcurrentDictionary<Type, bool> persistentTypes = new ConcurrentDictionary<Type, bool>();
         public void Validate(ActionContext actionContext, ValidationStateDictionary validationState, string prefix, object model) {

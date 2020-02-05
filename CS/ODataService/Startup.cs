@@ -6,8 +6,10 @@ using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ODataService.Helpers;
 using ODataService.Models;
 
@@ -27,11 +29,13 @@ namespace ODataService
         {
             services.AddOData();
             services.AddODataQueryFilter();
-            services.AddMvc(options =>
-            {
+            services.AddMvc(options => {
                 options.EnableEndpointRouting = false;
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                options.ModelValidatorProviders.Clear();
+            });
+
+            services.AddSingleton<IObjectModelValidator, CustomModelValidator>();
+
             services.AddXpoDefaultUnitOfWork(true, (DataLayerOptionsBuilder options) =>
                 options.UseConnectionString(Configuration.GetConnectionString("MSSqlServer"))
                 .UseAutoCreationOption(AutoCreateOption.DatabaseAndSchema) // debug only
@@ -39,19 +43,12 @@ namespace ODataService
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            //app.UseHttpsRedirection();
 
             app.UseODataBatching();
 

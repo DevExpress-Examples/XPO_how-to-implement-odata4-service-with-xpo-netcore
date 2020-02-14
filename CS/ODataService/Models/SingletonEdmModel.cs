@@ -50,7 +50,7 @@ namespace ODataService.Models {
             return edmModel;
         }
 
-        static EntitySetConfiguration CreateEntitySet(XPClassInfo classInfo, ODataConventionModelBuilder builder) {
+        static EntitySetConfiguration CreateEntitySet(XPClassInfo classInfo, ODataModelBuilder builder) {
             EntitySetConfiguration entitySetConfig = builder.EntitySets.FirstOrDefault(t => t.EntityType.ClrType == classInfo.ClassType);
             if(entitySetConfig != null) {
                 return entitySetConfig;

@@ -15,7 +15,7 @@ namespace Tests {
         [Test]
         public async Task SelectSimple() {
             Container container = GetODataContainer();
-            var customers = await container.Customers.ToListAsync();
+            var customers = await container.Customer.ToListAsync();
 
             Assert.AreEqual(4, customers.Count);
             Assert.True(customers.Exists(c => c.CustomerID == "BSBEV" && c.CompanyName == "B's Beverages"));
@@ -27,13 +27,13 @@ namespace Tests {
         [Test]
         public void GetCount() {
             Container container = GetODataContainer();
-            Assert.Throws<NotSupportedException>(() => container.Customers.Count());
+            Assert.Throws<NotSupportedException>(() => container.Customer.Count());
         }
 
         [Test]
         public async Task FilterAndSort() {
             Container container = GetODataContainer();
-            var customers = await container.Customers
+            var customers = await container.Customer
                 .Where(c => string.Compare(c.CustomerID, "C") >= 0)
                 .OrderByDescending(c => c.CompanyName)
                 .ToListAsync();
@@ -47,7 +47,7 @@ namespace Tests {
         [Test]
         public async Task SkipAndTake() {
             Container container = GetODataContainer();
-            var products = await container.Products.OrderBy(t => t.UnitPrice)
+            var products = await container.Product.OrderBy(t => t.UnitPrice)
                 .Skip(1).Take(2)
                 .ToListAsync();
 
@@ -59,7 +59,7 @@ namespace Tests {
         [Test]
         public async Task FilterByNull() {
             Container container = GetODataContainer();
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Where(o => o.Customer == null)
                 .ToListAsync();
             Assert.AreEqual(1, orders.Count);
@@ -68,7 +68,7 @@ namespace Tests {
         [Test]
         public async Task FilterByNotNull() {
             Container container = GetODataContainer();
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Where(o => o.Customer != null)
                 .ToListAsync();
             Assert.AreEqual(4, orders.Count);
@@ -77,7 +77,7 @@ namespace Tests {
         [Test]
         public async Task FilterByEnum() {
             Container container = GetODataContainer();
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Where(o => o.OrderStatus == OrderStatus.New)
                 .ToListAsync();
             Assert.AreEqual(2, orders.Count);
@@ -86,7 +86,7 @@ namespace Tests {
         [Test]
         public async Task Expand() {
             Container container = GetODataContainer();
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Expand(o => o.Customer)
                 .Expand("OrderDetails($expand=Product)")
                 .ToListAsync();
@@ -110,7 +110,7 @@ namespace Tests {
         [Test]
         public async Task FilterAndSortWithExpand() {
             Container container = GetODataContainer();
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Expand(o => o.Customer)
                 .Expand("OrderDetails($expand=Product)")
                 .Where(o => o.Customer.CustomerID != "OCEAN")
@@ -133,7 +133,7 @@ namespace Tests {
         [Test]
         public async Task FilterByChildCollections() {
             Container container = GetODataContainer();
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Expand("OrderDetails($expand=Product)")
                 .Where(o => o.OrderDetails.Any(t => t.Product.ProductName == "Queso Cabrales"))
                 .ToListAsync();
@@ -149,7 +149,7 @@ namespace Tests {
             DateTimeOffset startDate = new DateTimeOffset(new DateTime(2018, 03, 01));
             DateTimeOffset endDate = new DateTimeOffset(new DateTime(2018, 06, 01));
             Container container = GetODataContainer();
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Where(o => o.Date > startDate && o.Date <= endDate)
                 .ToListAsync();
 
@@ -163,7 +163,7 @@ namespace Tests {
         [Test]
         public async Task FilterByDateTimePart() {
             Container container = GetODataContainer();
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Where(o => o.Date.Value.Year == 2018 && (o.Date.Value.Month == 3 || o.Date.Value.Month == 6))
                 .ToListAsync();
             Assert.AreEqual(3, orders.Count);
@@ -172,7 +172,7 @@ namespace Tests {
         [Test]
         public async Task SelectBlobValues() {
             Container container = GetODataContainer();
-            var product = await container.Products.Where(t => t.ProductName == "Vegie-spread").FirstAsync();
+            var product = await container.Product.Where(t => t.ProductName == "Vegie-spread").FirstAsync();
 
             Assert.IsNotNull(product.Picture);
             Assert.AreEqual(10, product.Picture.Length);
@@ -184,8 +184,8 @@ namespace Tests {
         [Test]
         public async Task SelectWithProjection() {
             Container container = GetODataContainer();
-            var orders = await container.Orders.Expand(t => t.Customer).OrderBy(t => t.Date).ToListAsync();
-            var projected = await container.Orders
+            var orders = await container.Order.Expand(t => t.Customer).OrderBy(t => t.Date).ToListAsync();
+            var projected = await container.Order
                 .OrderBy(t => t.Date)
                 .Select(t => new {
                     OrderID = t.ID,
@@ -205,8 +205,8 @@ namespace Tests {
         [Test]
         public async Task SelectWithProjectionAndFunctions() {
             Container container = GetODataContainer();
-            var orders = await container.Orders.Expand(t => t.Customer).OrderBy(t => t.Date).ToListAsync();
-            var projected = await container.Orders
+            var orders = await container.Order.Expand(t => t.Customer).OrderBy(t => t.Date).ToListAsync();
+            var projected = await container.Order
                 .OrderBy(t => t.Date)
                 .Select(t => new {
                     Year = t.Date.Value.Year,
@@ -224,21 +224,21 @@ namespace Tests {
         [Test]
         public async Task ResourceReferenceProperty() {
             Container container = GetODataContainer();
-            int orderId = (await container.Orders
+            int orderId = (await container.Order
                 .Where(t => t.Date == new DateTimeOffset(new DateTime(2018, 06, 01)))
                 .FirstAsync()).ID;
 
-            var details = await container.Orders.ByKey(orderId).OrderDetails.Expand(t => t.Product).ToListAsync();
+            var details = await container.Order.ByKey(orderId).OrderDetails.Expand(t => t.Product).ToListAsync();
             Assert.AreEqual(3, details.Count);
         }
 
         [Test]
         public async Task InheritanceFilterByType() {
             Container container = GetODataContainer();
-            var documents = await container.Documents.ToListAsync();
-            var orders = await container.Documents.Where(t => t is Order).ToListAsync();
-            var contracts = await container.Documents.Where(t => t is Contract).ToListAsync();
-            var notOrders = await container.Documents.Where(t => !(t is Order)).ToListAsync();
+            var documents = await container.BaseDocument.ToListAsync();
+            var orders = await container.BaseDocument.Where(t => t is Order).ToListAsync();
+            var contracts = await container.BaseDocument.Where(t => t is Contract).ToListAsync();
+            var notOrders = await container.BaseDocument.Where(t => !(t is Order)).ToListAsync();
             Assert.AreEqual(5, orders.Count);
             Assert.AreEqual(3, contracts.Count);
             Assert.AreEqual(8, documents.Count);
@@ -248,19 +248,19 @@ namespace Tests {
         [Test]
         public async Task InheritanceCast() {
             Container container = GetODataContainer();
-            var contracts = await container.Documents.Where(t => (t as Contract).Number != "2018-0003").ToListAsync();
+            var contracts = await container.BaseDocument.Where(t => (t as Contract).Number != "2018-0003").ToListAsync();
             Assert.AreEqual(2, contracts.Count);
-            contracts = await container.Documents.Where(t => (t as Contract).Number == "2018-0003").ToListAsync();
+            contracts = await container.BaseDocument.Where(t => (t as Contract).Number == "2018-0003").ToListAsync();
             Assert.AreEqual(1, contracts.Count);
         }
 
         [Test]
         public async Task SelectInheritedReference() {
             Container container = GetODataContainer();
-            int orderId = (await container.Orders
+            int orderId = (await container.Order
                 .Where(t => t.Date == new DateTimeOffset(new DateTime(2018, 01, 22, 10, 00, 01)))
                 .FirstAsync()).ID;
-            BaseDocument parentDoc = await container.Orders.ByKey(orderId).ParentDocument.GetValueAsync();
+            BaseDocument parentDoc = await container.Order.ByKey(orderId).ParentDocument.GetValueAsync();
             Assert.IsNotNull(parentDoc);
             Assert.AreEqual(typeof(Contract), parentDoc.GetType());
             Assert.AreEqual("2018-0001", ((Contract)parentDoc).Number);
@@ -269,7 +269,7 @@ namespace Tests {
         [Test]
         public async Task ExpandInheritedCollection() {
             Container container = GetODataContainer();
-            Contract contract = await container.Contracts.Expand(c => c.LinkedDocuments)
+            Contract contract = await container.Contract.Expand(c => c.LinkedDocuments)
                 .Where(t => t.Number == "2018-0001")
                 .FirstAsync();
             Assert.AreEqual(3, contract.LinkedDocuments.Count);
@@ -282,7 +282,7 @@ namespace Tests {
         [Test]
         public async Task CrossFilterByChildCollection() {
             Container container = GetODataContainer();
-            var contracts = await container.Contracts.Where(c => c.LinkedDocuments.Any(d => d.Date <= c.Date)).ToListAsync();
+            var contracts = await container.Contract.Where(c => c.LinkedDocuments.Any(d => d.Date <= c.Date)).ToListAsync();
             Assert.AreEqual(1, contracts.Count);
             Assert.AreEqual("2018-0001", contracts[0].Number);
         }
@@ -290,10 +290,10 @@ namespace Tests {
         [Test]
         public async Task T727833() {
             Container container = GetODataContainer();
-            var orderDetail = (await container.OrderDetails.Expand("Product").Expand("Order($expand=Customer)").ToListAsync()).First(t => t.Order.Customer != null);
+            var orderDetail = (await container.OrderDetail.Expand("Product").Expand("Order($expand=Customer)").ToListAsync()).First(t => t.Order.Customer != null);
             int orderId = orderDetail.Order.ID;
             int productId = orderDetail.Product.ProductID;
-            var orders = await container.Orders
+            var orders = await container.Order
                 .Expand("Customer")
                 .Expand("OrderDetails($expand=Product)")
                 .Where(o => o.OrderDetails.Any(p => p.Product.ProductID == productId) && o.ID == orderId)

@@ -7,10 +7,10 @@ using ODataService.Helpers;
 using ODataService.Models;
 
 namespace ODataService.Controllers {
-    public class ProductsController : ODataController {
+    public class ProductController : ODataController {
 
         private UnitOfWork Session;
-        public ProductsController(UnitOfWork uow) {
+        public ProductController(UnitOfWork uow) {
             this.Session = uow;
         }
 

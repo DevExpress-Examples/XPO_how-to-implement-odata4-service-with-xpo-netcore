@@ -17,8 +17,8 @@ namespace ODataService.Models {
             var builder = new ODataConventionModelBuilder();
 
             // Approach 1: Automatically add all persistent classes to EDM
-            // This approach has a naming convention: a controller name must 
-            // match the corresponding XPO class name
+            // This approach has a naming convention: an OData controller 
+            // name must match the corresponding XPO class name
 
             var dictionary = new ReflectionDictionary();
             foreach(var type in ConnectionHelper.GetPersistentTypes()) {

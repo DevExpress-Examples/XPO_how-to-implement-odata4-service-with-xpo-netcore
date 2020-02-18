@@ -8,10 +8,10 @@ using ODataService.Helpers;
 using ODataService.Models;
 
 namespace ODataService.Controllers {
-    public class OrdersController : ODataController {
+    public class OrderController : ODataController {
 
         private UnitOfWork Session;
-        public OrdersController(UnitOfWork uow) {
+        public OrderController(UnitOfWork uow) {
             this.Session = uow;
         }
 
@@ -100,7 +100,7 @@ namespace ODataService.Controllers {
 
         [HttpPost]
         [HttpPut]
-        [ODataRoute("Orders({key})/OrderDetails")]
+        [ODataRoute("Order({key})/OrderDetails")]
         public IActionResult AddToOrderDetails([FromODataUri] int key, OrderDetail orderDetail) {
             Order order = Session.GetObjectByKey<Order>(key);
             if(order == null) {

@@ -6,10 +6,10 @@ using ODataService.Helpers;
 using ODataService.Models;
 
 namespace ODataService.Controllers {
-    public class OrderDetailsController : ODataController {
+    public class OrderDetailController : ODataController {
 
         private UnitOfWork Session;
-        public OrderDetailsController(UnitOfWork uow) {
+        public OrderDetailController(UnitOfWork uow) {
             this.Session = uow;
         }
 

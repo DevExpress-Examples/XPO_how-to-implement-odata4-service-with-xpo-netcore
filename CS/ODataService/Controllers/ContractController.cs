@@ -7,9 +7,9 @@ using ODataService.Helpers;
 using ODataService.Models;
 
 namespace ODataService.Controllers {
-    public class ContractsController : ODataController {
+    public class ContractController : ODataController {
         private UnitOfWork Session;
-        public ContractsController(UnitOfWork uow) {
+        public ContractController(UnitOfWork uow) {
             this.Session = uow;
         }
 

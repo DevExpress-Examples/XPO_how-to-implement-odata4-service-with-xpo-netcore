@@ -20,14 +20,14 @@ namespace Tests
                 CustomerID = "C0001",
                 CompanyName = "Test Company"
             };
-            container.AddToCustomers(customer);
+            container.AddToCustomer(customer);
             var response = await container.SaveChangesAsync();
 
             Assert.AreEqual(1, response.Count());
             Assert.AreEqual((int)HttpStatusCode.Created, response.First().StatusCode);
 
             container = GetODataContainer();
-            Customer createdItem = await container.Customers.Where(t => t.CustomerID == customer.CustomerID).FirstAsync();
+            Customer createdItem = await container.Customer.Where(t => t.CustomerID == customer.CustomerID).FirstAsync();
             Assert.AreEqual(customer.CustomerID, createdItem.CustomerID);
             Assert.AreEqual(customer.CompanyName, createdItem.CompanyName);
         }
@@ -35,7 +35,7 @@ namespace Tests
         [Test]
         public async Task UpdateObject() {
             Container container = GetODataContainer();
-            Customer customer = await container.Customers.Where(t => t.CustomerID == "BSBEV").FirstAsync();
+            Customer customer = await container.Customer.Where(t => t.CustomerID == "BSBEV").FirstAsync();
 
             customer.CompanyName = "Test Company Renamed";
             container.UpdateObject(customer);
@@ -45,7 +45,7 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Customer updatedItem = await container.Customers.Where(t => t.CustomerID == "BSBEV").FirstAsync();
+            Customer updatedItem = await container.Customer.Where(t => t.CustomerID == "BSBEV").FirstAsync();
             Assert.AreEqual(customer.CustomerID, updatedItem.CustomerID);
             Assert.AreEqual(customer.CompanyName, updatedItem.CompanyName);
         }
@@ -53,7 +53,7 @@ namespace Tests
         [Test]
         public async Task BatchUpdate() {
             Container container = GetODataContainer();
-            var customers = await container.Customers.ToListAsync();
+            var customers = await container.Customer.ToListAsync();
             foreach(var customer in customers) {
                 customer.CompanyName += " -renamed";
                 container.UpdateObject(customer);
@@ -66,7 +66,7 @@ namespace Tests
             }
 
             container = GetODataContainer();
-            customers = await container.Customers.ToListAsync();
+            customers = await container.Customer.ToListAsync();
             foreach(var customer in customers) {
                 Assert.IsTrue(customer.CompanyName.EndsWith(" -renamed"));
             }
@@ -75,7 +75,7 @@ namespace Tests
         [Test]
         public async Task DeleteObject() {
             Container container = GetODataContainer();
-            Customer customer = await container.Customers.Where(t => t.CustomerID == "WARTH").FirstAsync();
+            Customer customer = await container.Customer.Where(t => t.CustomerID == "WARTH").FirstAsync();
 
             container.DeleteObject(customer);
             var response = await container.SaveChangesAsync();
@@ -95,14 +95,14 @@ namespace Tests
                 ProductName = "test product",
                 Picture = pictureData
             };
-            container.AddToProducts(product);
+            container.AddToProduct(product);
             var response = await container.SaveChangesAsync();
 
             Assert.AreEqual(1, response.Count());
             Assert.AreEqual((int)HttpStatusCode.Created, response.First().StatusCode);
 
             container = GetODataContainer();
-            Product createdItem = await container.Products.Where(t => t.ProductName == product.ProductName).FirstAsync();
+            Product createdItem = await container.Product.Where(t => t.ProductName == product.ProductName).FirstAsync();
 
             Assert.IsNotNull(createdItem.Picture);
             Assert.AreEqual(product.Picture.Length, createdItem.Picture.Length);
@@ -115,7 +115,7 @@ namespace Tests
                 pictureData[i] = (byte)i;
             }
             Container container = GetODataContainer();
-            var product = await container.Products.Where(t => t.ProductName == "Queso Cabrales").FirstAsync();
+            var product = await container.Product.Where(t => t.ProductName == "Queso Cabrales").FirstAsync();
             byte[] oldPicture = product.Picture;
             product.Picture = pictureData;
             container.UpdateObject(product);
@@ -125,7 +125,7 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Product updatedItem = await container.Products.Where(t => t.ProductID == product.ProductID).FirstAsync();
+            Product updatedItem = await container.Product.Where(t => t.ProductID == product.ProductID).FirstAsync();
             Assert.IsNull(oldPicture);
             Assert.IsNotNull(updatedItem.Picture);
             Assert.AreEqual(pictureData.Length, updatedItem.Picture.Length);
@@ -134,7 +134,7 @@ namespace Tests
         [Test]
         public async Task AddRelatedObject() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.OrderByDescending(t => t.ID).FirstAsync();
+            Order order = await container.Order.OrderByDescending(t => t.ID).FirstAsync();
 
             OrderDetail detail = new OrderDetail() {
                 Quantity = 105,
@@ -147,7 +147,7 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.Created, response.First().StatusCode);
 
             container = GetODataContainer();
-            OrderDetail createdItem = await container.OrderDetails.OrderByDescending(t => t.OrderDetailID).FirstAsync();
+            OrderDetail createdItem = await container.OrderDetail.OrderByDescending(t => t.OrderDetailID).FirstAsync();
             Assert.AreEqual(detail.Quantity, createdItem.Quantity);
             Assert.AreEqual(detail.UnitPrice, createdItem.UnitPrice);
             Assert.Greater(createdItem.OrderDetailID, 0);
@@ -156,7 +156,7 @@ namespace Tests
         [Test]
         public async Task UpdateRelatedObject() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Expand(t => t.OrderDetails).OrderBy(t => t.Date).FirstAsync();
+            Order order = await container.Order.Expand(t => t.OrderDetails).OrderBy(t => t.Date).FirstAsync();
             OrderDetail detail = order.OrderDetails.OrderBy(t => t.OrderDetailID).First();
 
             short oldQuantity = detail.Quantity;
@@ -168,7 +168,7 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            OrderDetail updatedItem = (await container.Orders.Expand(t => t.OrderDetails)
+            OrderDetail updatedItem = (await container.Order.Expand(t => t.OrderDetails)
                 .Where(t => t.ID == order.ID).FirstAsync())
                 .OrderDetails.Where(d => d.OrderDetailID == detail.OrderDetailID).First();
             Assert.AreNotEqual(oldQuantity, updatedItem.Quantity);
@@ -178,7 +178,7 @@ namespace Tests
         [Test]
         public async Task DeleteRelatedObject() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Expand(t => t.OrderDetails).OrderBy(t => t.Date).FirstAsync();
+            Order order = await container.Order.Expand(t => t.OrderDetails).OrderBy(t => t.Date).FirstAsync();
             OrderDetail detail = order.OrderDetails.OrderBy(t => t.OrderDetailID).First();
 
             container.DeleteLink(order, "OrderDetails", detail);
@@ -188,14 +188,14 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Order updatedItem = await container.Orders.Expand(t => t.OrderDetails).Where(t => t.ID == order.ID).FirstAsync();
+            Order updatedItem = await container.Order.Expand(t => t.OrderDetails).Where(t => t.ID == order.ID).FirstAsync();
             Assert.False(updatedItem.OrderDetails.Any(d => d.OrderDetailID == detail.OrderDetailID));
         }
 
         [Test]
         public async Task DeleteAggregatedCollection() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Expand(t => t.OrderDetails).OrderBy(t => t.Date).FirstAsync();
+            Order order = await container.Order.Expand(t => t.OrderDetails).OrderBy(t => t.Date).FirstAsync();
 
             container.DeleteObject(order);
             var response = await container.SaveChangesAsync();
@@ -204,15 +204,15 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            var details = await container.OrderDetails.Where(t => t.Order.ID == order.ID).ToListAsync();
+            var details = await container.OrderDetail.Where(t => t.Order.ID == order.ID).ToListAsync();
             Assert.AreEqual(0, details.Count);
         }
 
         [Test]
         public async Task AddLink() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Where(t => t.Customer == null).OrderByDescending(t => t.ID).FirstAsync();
-            Customer customer = await container.Customers.Where(t => t.CustomerID == "BSBEV").FirstAsync();
+            Order order = await container.Order.Where(t => t.Customer == null).OrderByDescending(t => t.ID).FirstAsync();
+            Customer customer = await container.Customer.Where(t => t.CustomerID == "BSBEV").FirstAsync();
 
             container.AddLink(customer, "Orders", order);
             var response = await container.SaveChangesAsync();
@@ -221,7 +221,7 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Order updatedItem = await container.Orders.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
+            Order updatedItem = await container.Order.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
             Assert.IsNull(order.Customer);
             Assert.NotNull(updatedItem.Customer);
             Assert.AreEqual(updatedItem.Customer.CustomerID, customer.CustomerID);
@@ -230,8 +230,8 @@ namespace Tests
         [Test]
         public async Task UpdateLink() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Where(t => t.Customer.CustomerID == "BSBEV").OrderByDescending(t => t.ID).FirstAsync();
-            Customer customer = await container.Customers.Where(t => t.CustomerID == "SANTG").FirstAsync();
+            Order order = await container.Order.Where(t => t.Customer.CustomerID == "BSBEV").OrderByDescending(t => t.ID).FirstAsync();
+            Customer customer = await container.Customer.Where(t => t.CustomerID == "SANTG").FirstAsync();
 
             container.AddLink(customer, "Orders", order);
             var response = await container.SaveChangesAsync();
@@ -240,14 +240,14 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Order updatedItem = await container.Orders.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
+            Order updatedItem = await container.Order.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
             Assert.AreEqual(updatedItem.Customer.CustomerID, customer.CustomerID);
         }
 
         [Test]
         public async Task DeleteLink() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Expand(t => t.Customer).Where(t => t.Customer.CustomerID == "BSBEV").OrderByDescending(t => t.ID).FirstAsync();
+            Order order = await container.Order.Expand(t => t.Customer).Where(t => t.Customer.CustomerID == "BSBEV").OrderByDescending(t => t.ID).FirstAsync();
 
             container.DeleteLink(order.Customer, "Orders", order);
             var response = await container.SaveChangesAsync();
@@ -256,7 +256,7 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Order updatedItem = await container.Orders.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
+            Order updatedItem = await container.Order.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
             Assert.IsNotNull(order.Customer);
             Assert.IsNull(updatedItem.Customer);
         }
@@ -264,8 +264,8 @@ namespace Tests
         [Test]
         public async Task DeleteInheritedObject() {
             Container container = GetODataContainer();
-            int contractId = (await container.Contracts.Where(t => t.Number == "2018-0003").FirstAsync()).ID;
-            BaseDocument contract = await container.Documents.Where(t => t.ID == contractId).FirstAsync();
+            int contractId = (await container.Contract.Where(t => t.Number == "2018-0003").FirstAsync()).ID;
+            BaseDocument contract = await container.BaseDocument.Where(t => t.ID == contractId).FirstAsync();
 
             container.DeleteObject(contract);
             var response = await container.SaveChangesAsync();
@@ -274,15 +274,15 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            int count = (await container.Documents.ToListAsync()).Count(t => t.ID == contractId);
+            int count = (await container.BaseDocument.ToListAsync()).Count(t => t.ID == contractId);
             Assert.AreEqual(0, count);
         }
 
         [Test]
         public async Task AddLinkToInherited() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Where(t => t.ParentDocument == null).OrderByDescending(t => t.ID).FirstAsync();
-            Contract contract = await container.Contracts.Where(t => t.Number == "2018-0003").FirstAsync();
+            Order order = await container.Order.Where(t => t.ParentDocument == null).OrderByDescending(t => t.ID).FirstAsync();
+            Contract contract = await container.Contract.Where(t => t.Number == "2018-0003").FirstAsync();
 
             container.AddLink(contract, "LinkedDocuments", order);
             var response = await container.SaveChangesAsync();
@@ -291,7 +291,7 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Order updatedItem = await container.Orders.Expand(t => t.ParentDocument).Where(t => t.ID == order.ID).FirstAsync();
+            Order updatedItem = await container.Order.Expand(t => t.ParentDocument).Where(t => t.ID == order.ID).FirstAsync();
             Assert.IsNull(order.ParentDocument);
             Assert.NotNull(updatedItem.ParentDocument);
             Assert.AreEqual(updatedItem.ParentDocument.GetType(), typeof(Contract));
@@ -301,8 +301,8 @@ namespace Tests
         [Test]
         public async Task UpdateLinkToInherited() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Where(t => (t.ParentDocument as Contract).Number == "2018-0002").FirstAsync();
-            Contract contract = await container.Contracts.Where(t => t.Number == "2018-0003").FirstAsync();
+            Order order = await container.Order.Where(t => (t.ParentDocument as Contract).Number == "2018-0002").FirstAsync();
+            Contract contract = await container.Contract.Where(t => t.Number == "2018-0003").FirstAsync();
 
             container.AddLink(contract, "LinkedDocuments", order);
             var response = await container.SaveChangesAsync();
@@ -311,14 +311,14 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Order updatedItem = await container.Orders.Expand(t => t.ParentDocument).Where(t => t.ID == order.ID).FirstAsync();
+            Order updatedItem = await container.Order.Expand(t => t.ParentDocument).Where(t => t.ID == order.ID).FirstAsync();
             Assert.AreEqual(updatedItem.ParentDocument.ID, contract.ID);
         }
 
         [Test]
         public async Task DeleteLinkToInherited() {
             Container container = GetODataContainer();
-            Order order = await container.Orders.Expand(t => t.ParentDocument).Where(t => (t.ParentDocument as Contract).Number == "2018-0002").FirstAsync();
+            Order order = await container.Order.Expand(t => t.ParentDocument).Where(t => (t.ParentDocument as Contract).Number == "2018-0002").FirstAsync();
 
             container.DeleteLink(order.ParentDocument, "LinkedDocuments", order);
             var response = await container.SaveChangesAsync();
@@ -327,7 +327,7 @@ namespace Tests
             Assert.AreEqual((int)HttpStatusCode.NoContent, response.First().StatusCode);
 
             container = GetODataContainer();
-            Order updatedItem = await container.Orders.Expand(t => t.ParentDocument).Where(t => t.ID == order.ID).FirstAsync();
+            Order updatedItem = await container.Order.Expand(t => t.ParentDocument).Where(t => t.ID == order.ID).FirstAsync();
             Assert.IsNotNull(order.ParentDocument);
             Assert.IsNull(updatedItem.ParentDocument);
         }
@@ -339,7 +339,7 @@ namespace Tests
                 Date = DateTimeOffset.Now,
                 OrderStatus = OrderStatus.New
             };
-            container.AddToOrders(order);
+            container.AddToOrder(order);
             var response1 = await container.SaveChangesAsync();
 
             Assert.AreEqual(1, response1.Count());
@@ -348,7 +348,7 @@ namespace Tests
                 CustomerID = "Duffy",
                 CompanyName = "Acme"
             };
-            container.AddToCustomers(customer);
+            container.AddToCustomer(customer);
             order.Customer = customer;
             container.SetLink(order, "Customer", customer);
             var response2 = await container.SaveChangesAsync();
@@ -357,7 +357,7 @@ namespace Tests
             Assert.IsTrue(response2.Any(r => r.StatusCode == (int)HttpStatusCode.NoContent));
 
             container = GetODataContainer();
-            Order createdItem = await container.Orders.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
+            Order createdItem = await container.Order.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
             Assert.IsNotNull(createdItem.Customer);
             Assert.AreEqual(order.Customer.CustomerID, createdItem.Customer.CustomerID);
         }
@@ -370,12 +370,12 @@ namespace Tests
                 Date = DateTimeOffset.Now,
                 OrderStatus = OrderStatus.New
             };
-            container.AddToOrders(order);
+            container.AddToOrder(order);
             Customer customer = new Customer() {
                 CustomerID = "Duffy",
                 CompanyName = "Acme"
             };
-            container.AddToCustomers(customer);
+            container.AddToCustomer(customer);
             container.SetLink(order, "Customer", customer);
             var response1 = await container.SaveChangesAsync();
             Assert.AreEqual(3, response1.Count());
@@ -383,7 +383,7 @@ namespace Tests
             Assert.IsTrue(response1.Any(r => r.StatusCode == (int)HttpStatusCode.NoContent));
 
             container = GetODataContainer();
-            Order theOrder = await container.Orders.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
+            Order theOrder = await container.Order.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
             Assert.IsNotNull(theOrder.Customer);
             Assert.AreEqual(customer.CustomerID, theOrder.Customer.CustomerID);
 
@@ -393,7 +393,7 @@ namespace Tests
             Assert.AreEqual(1, response2.Count(r => r.StatusCode == (int)HttpStatusCode.NoContent));
 
             container = GetODataContainer();
-            Order theOrder2 = await container.Orders.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
+            Order theOrder2 = await container.Order.Expand(t => t.Customer).Where(t => t.ID == order.ID).FirstAsync();
             Assert.IsNull(theOrder2.Customer);
         }
     }

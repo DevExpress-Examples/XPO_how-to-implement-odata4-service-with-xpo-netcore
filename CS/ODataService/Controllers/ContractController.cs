@@ -15,30 +15,30 @@ namespace ODataService.Controllers {
 
         [EnableQuery]
         public IQueryable<Contract> Get() {
-            return Session.Query<Contract>().AsWrappedQuery();
+            return Session.Query<Contract>();
         }
 
         [EnableQuery]
         public SingleResult<Contract> Get([FromODataUri] int key) {
-            var result = Session.Query<Contract>().AsWrappedQuery().Where(t => t.ID == key);
+            var result = Session.Query<Contract>().Where(t => t.ID == key);
             return SingleResult.Create(result);
         }
 
         [EnableQuery]
         public SingleResult<Customer> GetCustomer([FromODataUri] int key) {
-            var result = Session.Query<Contract>().AsWrappedQuery().Where(m => m.ID == key).Select(m => m.Customer);
+            var result = Session.Query<Contract>().Where(m => m.ID == key).Select(m => m.Customer);
             return SingleResult.Create(result);
         }
 
         [EnableQuery]
         public SingleResult<BaseDocument> GetParentDocument([FromODataUri] int key) {
-            var result = Session.Query<Contract>().AsWrappedQuery().Where(m => m.ID == key).Select(m => m.ParentDocument);
+            var result = Session.Query<Contract>().Where(m => m.ID == key).Select(m => m.ParentDocument);
             return SingleResult.Create(result);
         }
 
         [EnableQuery]
         public IQueryable<BaseDocument> GetLinkedDocuments([FromODataUri] int key) {
-            return Session.Query<Contract>().AsWrappedQuery().Where(m => m.ID == key).SelectMany(t => t.LinkedDocuments);
+            return Session.Query<Contract>().Where(m => m.ID == key).SelectMany(t => t.LinkedDocuments);
         }
 
 

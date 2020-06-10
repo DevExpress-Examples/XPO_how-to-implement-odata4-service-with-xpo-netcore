@@ -15,12 +15,12 @@ namespace ODataService.Controllers {
 
         [EnableQuery]
         public IQueryable<OrderDetail> Get() {
-            return Session.Query<OrderDetail>().AsWrappedQuery();
+            return Session.Query<OrderDetail>();
         }
 
         [EnableQuery]
         public SingleResult<OrderDetail> Get([FromODataUri] int key) {
-            var result = Session.Query<OrderDetail>().AsWrappedQuery().Where(t => t.OrderDetailID == key);
+            var result = Session.Query<OrderDetail>().Where(t => t.OrderDetailID == key);
             return SingleResult.Create(result);
         }
 

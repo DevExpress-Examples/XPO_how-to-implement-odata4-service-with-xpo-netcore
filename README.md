@@ -68,5 +68,5 @@ This example demonstrates how to create **an ASP.NET Core 3.1 Web API** project 
 
 ### Step 4: Implement OData Controllers for CRUD and Actions/Functions
 - In the Controllers folder, add classes inherited from **Microsoft.AspNet.OData.ODataController** for each data model class created on the second step. 
-- Implement the required methods in OData controllers (e.g., `Get`, `Post`, `Put`, `Path`, `Delete`, etc.) as shown in this example (for instance, **CS\ODataService\Controllers\CustomersController.cs**).
+- Implement the required methods in OData controllers (e.g., `Get`, `Post`, `Put`, `Patch`, `Delete`, etc.) as shown in this example (for instance, **CS\ODataService\Controllers\CustomersController.cs**).
 - Implement methods in an OData Controller for required OData Actions and Functions as shown in  **CS\ODataService\Controllers\ActionsController.cs**.

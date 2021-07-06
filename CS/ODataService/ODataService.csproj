@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DevExpress.Xpo" Version="20.1.12" />
+    <PackageReference Include="DevExpress.Xpo" Version="20.1.13" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.4.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />

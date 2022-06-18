@@ -3,7 +3,8 @@
 [![](https://img.shields.io/badge/Open_in_DevExpress_Support_Center-FF7200?style=flat-square&logo=DevExpress&logoColor=white)](https://supportcenter.devexpress.com/ticket/details/T835143)
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 <!-- default badges end -->
-# How to Implement OData v4 Service with XPO (.NET Core 3.1)
+How to Implement OData v4 Service with XPO (.NET Core 3.1)
+========================================
 
 This example demonstrates how to create **an ASP.NET Core 3.1 Web API** project and provide a simple REST API using the XPO ORM for data access. For the .NET Framework-based example, refer to [How to Implement OData v4 Service with XPO (.NET Framework)](https://github.com/DevExpress-Examples/XPO_how-to-implement-odata4-service-with-xpo).
 

@@ -5,7 +5,7 @@
 <!-- default badges end -->
 # How to Implement OData v4 Service with XPO (.NET Core 3.1)
 
->**NOTE**: It is much easier to use the **[Web API Service](https://docs.devexpress.com/eXpressAppFramework/403394/backend-web-api-service)** with integrated authorization & CRUD operations based on ASP.NET Core OData 8.0 (OData v4) powered by EF Core and XPO ORM library instead. For more information, see [A 1-Click Solution for CRUD Web API Services with Role-based Access Control via EF Core & XPO (FREE)](https://community.devexpress.com/blogs/news/archive/2022/06/20/a-one-click-solution-for-role-based-access-control-asp-net-core-web-api-services-via-entity-framework-core-and-xpo-v22-1.aspx).
+> **Note**: It is much easier to use the **[Web API Service](https://docs.devexpress.com/eXpressAppFramework/403394/backend-web-api-service)** with integrated authorization & CRUD operations based on ASP.NET Core OData 8.0 (OData v4) powered by EF Core and XPO ORM library instead. For more information, see [A 1-Click Solution for CRUD Web API Services with Role-based Access Control via EF Core & XPO (FREE)](https://community.devexpress.com/blogs/news/archive/2022/06/20/a-one-click-solution-for-role-based-access-control-asp-net-core-web-api-services-via-entity-framework-core-and-xpo-v22-1.aspx).
 
 ----------------
 

@@ -2,6 +2,7 @@
 ![](https://img.shields.io/endpoint?url=https://codecentral.devexpress.com/api/v1/VersionRange/223364607/23.2.1%2B)
 [![](https://img.shields.io/badge/Open_in_DevExpress_Support_Center-FF7200?style=flat-square&logo=DevExpress&logoColor=white)](https://supportcenter.devexpress.com/ticket/details/T835143)
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
+[![](https://img.shields.io/badge/💬_Leave_Feedback-feecdd?style=flat-square)](#does-this-example-address-your-development-requirementsobjectives)
 <!-- default badges end -->
 # How to Implement OData v4 Service with XPO (.NET Core 3.1)
 
@@ -78,3 +79,10 @@ This example demonstrates how to create **an ASP.NET Core 3.1 Web API** project 
 - In the Controllers folder, add classes inherited from **Microsoft.AspNet.OData.ODataController** for each data model class created on the second step. 
 - Implement the required methods in OData controllers (e.g., `Get`, `Post`, `Put`, `Patch`, `Delete`, etc.) as shown in this example (for instance, **CS\ODataService\Controllers\CustomersController.cs**).
 - Implement methods in an OData Controller for required OData Actions and Functions as shown in  **CS\ODataService\Controllers\ActionsController.cs**.
+<!-- feedback -->
+## Does this example address your development requirements/objectives?
+
+[<img src="https://www.devexpress.com/support/examples/i/yes-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=XPO_how-to-implement-odata4-service-with-xpo-netcore&~~~was_helpful=yes) [<img src="https://www.devexpress.com/support/examples/i/no-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=XPO_how-to-implement-odata4-service-with-xpo-netcore&~~~was_helpful=no)
+
+(you will be redirected to DevExpress.com to submit your response)
+<!-- feedback end -->

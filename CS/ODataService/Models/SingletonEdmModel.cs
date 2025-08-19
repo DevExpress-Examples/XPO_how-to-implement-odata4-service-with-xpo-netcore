@@ -1,11 +1,9 @@
 using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using DevExpress.Xpo.Metadata;
-using Microsoft.AspNet.OData.Builder;
 using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 using ODataService.Helpers;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace ODataService.Models {

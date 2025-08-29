@@ -34,7 +34,7 @@ namespace ODataService
                     .Expand()
                     .Count()
                     .SetMaxTop(null)
-                    .AddRouteComponents("odata", SingletonEdmModel.GetEdmModel(), new DefaultODataBatchHandler()));
+                    .AddRouteComponents("odata", SingletonEdmModel.GetEdmModel()));
 
             services.AddSingleton<IObjectModelValidator, CustomModelValidator>();
 

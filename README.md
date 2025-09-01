@@ -14,7 +14,7 @@ This example demonstrates how to create **an ASP.NET 8** project and provide a s
 
 ## Prerequisites
 
-* [Visual Studio 2022] with the following workloads:
+* [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) with the following workloads:
   * **ASP.NET and web development**
   * **.NET cross-platform development**
 * [.NET 8.0 SDK or later](https://www.microsoft.com/net/download/all)
@@ -86,4 +86,5 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 
 (you will be redirected to DevExpress.com to submit your response)
 <!-- feedback end -->
+
 

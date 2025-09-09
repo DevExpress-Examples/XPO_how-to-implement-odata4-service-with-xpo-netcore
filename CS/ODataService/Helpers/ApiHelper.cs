@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Net;
 using DevExpress.Xpo;
-using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.OData.Deltas;
 
 namespace ODataService.Helpers {
     public static class ApiHelper {

@@ -1,17 +1,16 @@
-﻿using System;
-using System.Linq;
-using DevExpress.Xpo.DB;
-using Microsoft.AspNet.OData.Batch;
-using Microsoft.AspNet.OData.Extensions;
+﻿using DevExpress.Xpo.DB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.OData.Batch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ODataService.Helpers;
 using ODataService.Models;
+using System;
+using System.Linq;
 
 namespace ODataService
 {
@@ -27,12 +26,15 @@ namespace ODataService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOData();
-            services.AddODataQueryFilter();
-            services.AddMvc(options => {
-                options.EnableEndpointRouting = false;
-                options.ModelValidatorProviders.Clear();
-            });
+            services.AddControllers()
+                .AddOData(opt => opt
+                    .Select()
+                    .Filter()
+                    .OrderBy()
+                    .Expand()
+                    .Count()
+                    .SetMaxTop(null)
+                    .AddRouteComponents("odata", SingletonEdmModel.GetEdmModel()));
 
             services.AddSingleton<IObjectModelValidator, CustomModelValidator>();
 
@@ -50,12 +52,11 @@ namespace ODataService
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseODataBatching();
+            app.UseRouting();
 
-            app.UseMvc(b =>
+            app.UseEndpoints(endpoints =>
             {
-                b.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
-                b.MapODataServiceRoute("odata", "odata", SingletonEdmModel.GetEdmModel(), new DefaultODataBatchHandler());
+                endpoints.MapControllers();
             });
         }
     }

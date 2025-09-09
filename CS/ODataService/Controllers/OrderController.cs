@@ -1,9 +1,12 @@
 using System;
 using System.Linq;
 using DevExpress.Xpo;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Deltas;
+using Microsoft.AspNetCore.OData.Formatter;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Results;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using ODataService.Helpers;
 using ODataService.Models;
 
@@ -100,7 +103,7 @@ namespace ODataService.Controllers {
 
         [HttpPost]
         [HttpPut]
-        [ODataRoute("Order({key})/OrderDetails")]
+        [Route("Order({key})/OrderDetails")]
         public IActionResult AddToOrderDetails([FromODataUri] int key, OrderDetail orderDetail) {
             Order order = Session.GetObjectByKey<Order>(key);
             if(order == null) {

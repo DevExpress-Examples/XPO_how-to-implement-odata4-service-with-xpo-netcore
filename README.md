@@ -4,20 +4,20 @@
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 [![](https://img.shields.io/badge/💬_Leave_Feedback-feecdd?style=flat-square)](#does-this-example-address-your-development-requirementsobjectives)
 <!-- default badges end -->
-# How to Implement OData v4 Service with XPO (.NET Core 3.1)
+# How to Implement OData v4 Service with XPO (.NET 8)
 
 > **Note**: It is much easier to use the **[Web API Service](https://docs.devexpress.com/eXpressAppFramework/403394/backend-web-api-service)** with integrated authorization & CRUD operations based on ASP.NET Core OData 8.0 (OData v4) powered by EF Core and XPO ORM library instead. For more information, see [A 1-Click Solution for CRUD Web API Services with Role-based Access Control via EF Core & XPO (FREE)](https://community.devexpress.com/blogs/news/archive/2022/06/20/a-one-click-solution-for-role-based-access-control-asp-net-core-web-api-services-via-entity-framework-core-and-xpo-v22-1.aspx).
 
 ----------------
 
-This example demonstrates how to create **an ASP.NET Core 3.1 Web API** project and provide a simple REST API using the XPO ORM for data access. For the .NET Framework-based example, refer to [How to Implement OData v4 Service with XPO (.NET Framework)](https://github.com/DevExpress-Examples/XPO_how-to-implement-odata4-service-with-xpo).
+This example demonstrates how to create **an ASP.NET 8** project and provide a simple REST API using the XPO ORM for data access. For the .NET Framework-based example, refer to [How to Implement OData v4 Service with XPO (.NET Framework)](https://github.com/DevExpress-Examples/XPO_how-to-implement-odata4-service-with-xpo).
 
 ## Prerequisites
 
-* [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) with the following workloads:
+* [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) with the following workloads:
   * **ASP.NET and web development**
-  * **.NET Core cross-platform development**
-* [.NET Core SDK 3.1 or later](https://www.microsoft.com/net/download/all)
+  * **.NET cross-platform development**
+* [.NET 8.0 SDK or later](https://www.microsoft.com/net/download/all)
 
 ## Steps To Implement
 
@@ -41,38 +41,38 @@ This example demonstrates how to create **an ASP.NET Core 3.1 Web API** project 
 ```
 - Modify the `ConfigureServices()` method in the *Startup.cs* file to initialize the data layer and register XPO UnitOfWork and OData services in Dependency Injection.
 ```cs
-  public void ConfigureServices(IServiceCollection services) {
-  	services.AddOData();
-  	services.AddODataQueryFilter();
-      services.AddMvc(options => {
-          options.EnableEndpointRouting = false;
-          options.ModelValidatorProviders.Clear();
-      });
-  
-      services.AddSingleton<IObjectModelValidator, CustomModelValidator>();
-  
-      services.AddXpoDefaultUnitOfWork(true, (DataLayerOptionsBuilder options) =>
-          options.UseConnectionString(Configuration.GetConnectionString("MSSqlServer"))
-          .UseAutoCreationOption(AutoCreateOption.DatabaseAndSchema) // debug only
-          .UseEntityTypes(ConnectionHelper.GetPersistentTypes()));
-  }
+public void ConfigureServices(IServiceCollection services) {
+    services.AddControllers()
+        .AddOData(opt => opt
+            .Select()
+            .Filter()
+            .OrderBy()
+            .Expand()
+            .Count()
+            .SetMaxTop(null)
+            .AddRouteComponents("odata", SingletonEdmModel.GetEdmModel()));
+
+    services.AddSingleton<IObjectModelValidator, CustomModelValidator>();
+
+    services.AddXpoDefaultUnitOfWork(true, (DataLayerOptionsBuilder options) =>
+        options.UseConnectionString(Configuration.GetConnectionString("MSSqlServer"))
+        .UseAutoCreationOption(AutoCreateOption.DatabaseAndSchema) // debug only
+        .UseEntityTypes(ConnectionHelper.GetPersistentTypes()));
+}
 ```
-- Modify the `Configure()` method in the *Startup.cs* file to add middleware for OData services and specify mapping for the service route. Note that we will pass the EDM model defined on the second step as a parameter (`SingletonEdmModel.GetEdmModel()`).
+- Modify the Configure() method in the Startup.cs file to configure routing and map controllers:
 ```cs
-  public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-      if (env.IsDevelopment())
-      {
-          app.UseDeveloperExceptionPage();
-      }
-  
-      app.UseODataBatching();
-  
-      app.UseMvc(b =>
-      {
-          b.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
-          b.MapODataServiceRoute("odata", "odata", SingletonEdmModel.GetEdmModel(), new DefaultODataBatchHandler());
-      });
-  }
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+    if (env.IsDevelopment()) {
+        app.UseDeveloperExceptionPage();
+    }
+
+    app.UseRouting();
+
+    app.UseEndpoints(endpoints => {
+        endpoints.MapControllers();
+    });
+}
 ```
 
 ### Step 4: Implement OData Controllers for CRUD and Actions/Functions
@@ -86,3 +86,5 @@ This example demonstrates how to create **an ASP.NET Core 3.1 Web API** project 
 
 (you will be redirected to DevExpress.com to submit your response)
 <!-- feedback end -->
+
+

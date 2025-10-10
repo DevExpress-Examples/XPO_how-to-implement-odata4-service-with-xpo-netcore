@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using DevExpress.Xpo;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.AspNetCore.OData.Routing.Attributes;
 using ODataService.Helpers;
 using ODataService.Models;
 
@@ -16,7 +13,7 @@ namespace ODataService.Controllers {
         public ActionsController(UnitOfWork uow) {
             this.Session = uow;
         }
-        [ODataRoute("InitializeDatabase")]
+        [Route("odata/InitializeDatabase")]
         public IActionResult InitializeDatabase() {
             DemoDataHelper.CleanupDatabase(Session);
             DemoDataHelper.CreateDemoData(Session);
@@ -24,7 +21,7 @@ namespace ODataService.Controllers {
         }
 
         [HttpGet]
-        [ODataRoute("TotalSalesByYear(year={year})")]
+        [Route("odata/TotalSalesByYear(year={year})")]
         public IActionResult TotalSalesByYear(int year) {
             decimal result = Session.Query<Order>()
                     .Where(o => o.Date.Value.Year == year)

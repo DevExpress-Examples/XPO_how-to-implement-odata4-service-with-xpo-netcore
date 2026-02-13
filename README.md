@@ -80,7 +80,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 - Implement the required methods in OData controllers (e.g., `Get`, `Post`, `Put`, `Patch`, `Delete`, etc.) as shown in this example (for instance, **CS\ODataService\Controllers\CustomersController.cs**).
 - Implement methods in an OData Controller for required OData Actions and Functions as shown in  **CS\ODataService\Controllers\ActionsController.cs**.
 <!-- feedback -->
-## Does this example address your development requirements/objectives?
+## Does This Example Address Your Development Requirements/Objectives?
 
 [<img src="https://www.devexpress.com/support/examples/i/yes-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=XPO_how-to-implement-odata4-service-with-xpo-netcore&~~~was_helpful=yes) [<img src="https://www.devexpress.com/support/examples/i/no-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=XPO_how-to-implement-odata4-service-with-xpo-netcore&~~~was_helpful=no)
 

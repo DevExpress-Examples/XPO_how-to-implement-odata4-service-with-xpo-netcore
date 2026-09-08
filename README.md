@@ -15,7 +15,7 @@ This example demonstrates how to create **an ASP.NET 8** project and provide a s
 ## Prerequisites
 
 * [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) with the following workloads:
-	* .NET desktop development
+	* .NET Core SDK
 	* ASP.NET and web development
 	* .NET Core cross-platform development
 
